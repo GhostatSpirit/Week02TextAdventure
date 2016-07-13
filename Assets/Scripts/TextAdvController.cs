@@ -17,6 +17,7 @@ public class TextAdvController : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
+	// main chunk of the text adventure
 	void Update () {
 		// declare the text buffer
 		string textBuffer = "";
@@ -38,6 +39,7 @@ public class TextAdvController : MonoBehaviour {
 			}
 		}
 		else if (currentRoom == "Market"){
+			ShowRoomName (ref textBuffer);
 			ShowMarket (ref textBuffer);
 		}
 
@@ -61,7 +63,7 @@ public class TextAdvController : MonoBehaviour {
 
 		textBuffer += "When you don't have a target, your life is usually boring.\n";
 		textBuffer += "But not this time...";
-		textBuffer += "\n";
+		textBuffer += "\n\n";
 
 		textBuffer += "You are chasing a most-wanted, a dangerous dynamite scientist called Decker.\n";
 		textBuffer += "All the evidence lead you here... Mars. The beautiful planet.\n";
