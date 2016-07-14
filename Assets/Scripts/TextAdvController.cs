@@ -15,14 +15,23 @@ public class TextAdvController : MonoBehaviour {
 
 	// bool that decides if the hero can enter the bar
 	bool hasBarAccess;
+	// bool that shows whether the player has finished searching in the Main Street
+	bool visitedMainStreet;
+	// bool that shows whether the player has finished searching in Weapon Universe
+	bool visitedWeaponUniverse;
 	// wanderPos shows where the player is in the wander process in the Main Street
 	int wanderPos = 0;
 
 	// Use this for initialization
 	void Start () {
-		currentRoom = "Intro";
-		hasBarAccess = false;
 		running = true;
+		currentRoom = "Intro";
+
+		hasBarAccess = false;
+
+		visitedMainStreet = false;
+		visitedWeaponUniverse = false;
+
 	}
 	
 	/* Rooms:
@@ -120,7 +129,7 @@ public class TextAdvController : MonoBehaviour {
 		textBuffer +=   "As soon as you step onto the stairs in front of Bounty Hunter Bar, " +
 						"two sturdy guards get in your way and speak firmly:\n" +
 						"“This is an restricted area. VIPs only.”\n" +
-						"\n“Hah, a Bounty Hunter Bar blocks bounty hunters away,” you think.\n" +
+						"\n“Hah, a Bounty Hunter Bar blocks bounty hunters away,” you grumble.\n" +
 						"As you are thinking, your space shutter takes off and flies away.\n" +
 						"Now you have to wait hours for another shutter.\n" +
 						"\npress [S] to head back to Mars Space Station…";
@@ -140,14 +149,20 @@ public class TextAdvController : MonoBehaviour {
 		"\nThe Main Street is crowded with all kinds of people: " +
 		"merchants, mercenaries, travelers, kids and of course, gangs. " +
 		"At the corner of the street you can find Weapon Universe, " +
-		"which is, literally, the universe of weapons.\n" +
-		"\npress [A] to wander on the Main Street…" +
-		"\npress [D] to enter Weapon Universe…" +
-		"\npress [S] to return to Mars Space Station…";
+		"which is, literally, the universe of weapons.\n";
+		
+		if (!visitedMainStreet)
+			textBuffer += "\npress [A] to wander on the Main Street…";
+		if (!visitedWeaponUniverse)
+			textBuffer += "\npress [D] to enter Weapon Universe…";
+		textBuffer += "\npress [S] to return to Mars Space Station…";
+
 		if(Input.GetKeyDown(KeyCode.A)){
-			currentRoom = "Main Street";
+			if (!visitedMainStreet)
+				currentRoom = "Main Street";
 		} else if(Input.GetKeyDown(KeyCode.D)){
-			currentRoom = "Weapon Universe";
+			if (!visitedWeaponUniverse)
+				currentRoom = "Weapon Universe";
 		} else if(Input.GetKeyDown(KeyCode.S)){
 			currentRoom = "Space Station";
 		}
@@ -155,11 +170,86 @@ public class TextAdvController : MonoBehaviour {
 
 	void ShowMainStreet(ref string textBuffer){
 		// wanderPos stores where the player is in the wander process
-		textBuffer += "Your are wandering in the Main Street of the market.\n";
-		if(wanderPos == 0){
-			//Wander0();
-		} else{
-				
+
+		if(wanderPos == 0 || wanderPos == 1){
+			textBuffer += "Your are wandering in the Main Street of the market.\n\n";
+			textBuffer += "You start chatting with people and you are pretty good of it. " +
+						  "You start asking people questions about your target, Decker.\n";
+		}
+		if (wanderPos == 0) {
+			ShowWanderMsg0(ref textBuffer);
+		}
+		else if (wanderPos == 1){
+			ShowWanderMsg1(ref textBuffer);
+		}
+		else if (wanderPos == 2){
+			textBuffer += "Your are wandering in the Main Street of the market.\n\n";
+			ShowWanderMsg2(ref textBuffer);
+		}
+		else if (wanderPos == 3){
+			ShowWanderMsg3(ref textBuffer);
+		}
+	}
+
+
+	void ShowWanderMsg0(ref string textBuffer){
+		textBuffer +=   "A hippie with slovenly appearance answers: " +
+						"“What, Decker? He seems to be two-meter-tall muscle nerd. " +
+						"I heard that he used to play basketball.”\n" +
+						"\nA merchant with an white headscarf and gold rings on his fingers says: " +
+						"“I know Decker. I know about him. People call him ‘Decker the Demolition’. " +
+						"A very charming girl, she is.” \n" +
+						"\npress [D] to ask other people…";
+		
+		if (Input.GetKeyDown(KeyCode.D)) {
+			wanderPos++;
+		}
+		
+	}
+
+	void ShowWanderMsg1(ref string textBuffer){
+		textBuffer += "A beggar sitting on the sidewalk with a stick in his hand tells you: " +
+				      "“No, no! Decker is just a college student who was expelled from school. " +
+					  "Some said to me it’s because he wanted to blow his professor up.”\n" +
+				   	  "\nA housewife who is petting her kitty mentions: " +
+					  "“Someone told me that this Decker is a ladyboy.”\n" +
+					  "\npress [D] to keep wandering on the street…";
+
+		if (Input.GetKeyDown(KeyCode.D)) {
+			wanderPos++;
+		}
+		
+	}
+
+	void ShowWanderMsg2(ref string textBuffer){
+		textBuffer +=  "You meet a little boy selling newspaper, and you ask him " +
+						"if he knows anything about Decker.\nThe boy says firmly: " +
+						"“Decker must be an alien. All my friends say he is.”\n" +
+						"Your head starts to ache.\n" +
+						"“Now, could you please buy a copy of newspaper?”" +
+						"\n“Ah…” you sigh, then you pull out a coin.\n" +
+						"\n“Oh, and, are you a bounty hunter? Then this might be useful!”\n" +
+						"The boy takes a letter out of his pocket and handed it to you. " +
+						"Then just he disappears in the crowd. \n" +
+						"\npress [D] to examine the letter.";
+		
+		if (Input.GetKeyDown(KeyCode.D)) {
+			wanderPos++;
+		}
+	}
+
+	void ShowWanderMsg3(ref string textBuffer){
+		textBuffer +=   "On the front it reads “Invitation”, " +
+						"the letters are printed with a beautiful handwritten font.\n" +
+						"On the back it reads “Mars Bounty Hunter Bar”, " +
+						"with its logo besides.\n" +
+						"\n“I think we’ve done with searching on the main street,” you thought.\n" +
+						"\npress [S] to return to Mars Space Station";
+		
+		if (Input.GetKeyDown(KeyCode.S)) {
+			hasBarAccess = true;
+			visitedMainStreet = true;
+			currentRoom = "Space Station";
 		}
 	}
 
