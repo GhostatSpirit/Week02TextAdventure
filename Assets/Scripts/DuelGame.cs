@@ -2,9 +2,10 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class DuetGame : MonoBehaviour {
+public class DuelGame : MonoBehaviour {
 	// bool that controls whether this script will run
-	bool running;
+	public bool active;
+	bool lastActive;
 
 	float beginTime;
 	// the shortest time that the reaction moment starts
@@ -26,26 +27,45 @@ public class DuetGame : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		//hasBegun = false;
-		beginTime = GenerateBeginTime();
+		beginTime = -1;
 
 		startReactMoment = -1f;
 		playerReactTime = -1f;
 		comReactTime = GenerateReactTime();
 
-		running = false;
+		active = false;
+		lastActive = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
+		// make sure that this part will only be executed once
+		if(active && (lastActive == false)){
+			beginTime = GenerateBeginTime();
+		}
+
+
+		// if the script is not active, do not execute main game chunk
+		// save the lastActive
+		if (!active) {
+			lastActive = active;
+			return;
+		} else{
+			lastActive = active;
+		}
+
+		// main game chunk
 		string textBuffer = "";
-		textBuffer += "This is a duet Game.\n";
+		textBuffer += "This is a duel Game between you and the driver.\n";
+		textBuffer += "When the reference shouts “FIRE”, press [SPACE] as soon as possible.\n\n";
 
 
 
 		if (Time.time < beginTime) {
 			textBuffer += "READY...\n";
 		} else {
-			textBuffer += "Press [SPACE] now!\n";
+			textBuffer += "FIRE! Press [SPACE] now!\n";
 
 			if (startReactMoment == -1f)
 				startReactMoment = Time.time;
@@ -62,6 +82,23 @@ public class DuetGame : MonoBehaviour {
 					textBuffer += "\nYou won!\n";
 				} else {
 					textBuffer += "\nYou lose!\n";
+					textBuffer +=   "The women driver seems bored. " +
+									"She takes a sip of wine and says: " +
+									"“No one can ever beat me in this game. " +
+									"But if you want, we can just play again.”\n" +
+									"\npress [D] to play the duel game again…";
+					
+					if(Input.GetKeyDown(KeyCode.D)){
+						// generate the begin time again
+						beginTime = GenerateBeginTime();
+						// set the game to be a bit easier
+						averageComReactTime += 50f;
+						// generate the com reaction time again
+						comReactTime = GenerateReactTime();
+						// reset the variables
+						startReactMoment = -1f;
+						playerReactTime = -1f;
+					}
 				}
 			}
 		}
@@ -72,7 +109,11 @@ public class DuetGame : MonoBehaviour {
 
 	float GenerateBeginTime(){
 		// generate a random time (in seconds)
-		float temp = Random.Range(minSec, maxSec);
+
+		// get current time
+		float current = Time.time;
+
+		float temp = Random.Range(current + minSec, current + maxSec);
 		Debug.Log(temp.ToString());
 		return temp;
 	}

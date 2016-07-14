@@ -10,7 +10,7 @@ public class TextAdvController : MonoBehaviour {
 	// string that stores the current room name
 	public string currentRoom;
 	// bool that controls whether this script will be running
-	public bool running;
+	public bool active;
 
 
 	// bool that decides if the hero can enter the bar
@@ -22,6 +22,8 @@ public class TextAdvController : MonoBehaviour {
 	bool visitedMainStreet;
 	// bool that shows whether the player has finished searching in Weapon Universe
 	bool visitedWeaponUniverse;
+	// bool that shows whether the player has finished the duel game
+	bool visitedDuelGame;
 	// wanderPos shows where the player is in the wander process in the Main Street
 	int wanderPos = 0;
 	// shows where the player is in Weapon Universe
@@ -29,7 +31,7 @@ public class TextAdvController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		running = true;
+		active = true;
 		currentRoom = "Intro";
 
 		hasBarAccess = false;
@@ -37,6 +39,7 @@ public class TextAdvController : MonoBehaviour {
 
 		visitedMainStreet = false;
 		visitedWeaponUniverse = false;
+		visitedDuelGame = false;
 
 	}
 	
@@ -47,10 +50,15 @@ public class TextAdvController : MonoBehaviour {
 	 * Market
 	 * Main Street
 	 * Weapon Universe
-	 * 
+	 * Duel Game
+	 * Duel Game Won
 	 */
 
 	void Update () {
+		// if the script is not active, do not execute the following lines
+		if (!active)
+			return;
+
 		// declare the text buffer
 		string textBuffer = "";
 
@@ -67,8 +75,13 @@ public class TextAdvController : MonoBehaviour {
 			if(!hasBarAccess){
 				ShowBarBlocked (ref textBuffer);
 			} else{
+				ShowRoomName(ref textBuffer);
 				ShowBarEnter (ref textBuffer);
 			}
+		}
+		else if (currentRoom == "Duel Game Won"){
+			textBuffer += "You are currently in: Bar\n\n";
+			ShowDuelWon(ref textBuffer);
 		}
 		else if (currentRoom == "Market"){
 			ShowRoomName (ref textBuffer);
@@ -152,7 +165,51 @@ public class TextAdvController : MonoBehaviour {
 	}
 
 	void ShowBarEnter(ref string textBuffer){
-		
+		textBuffer +=   "Just as the security guards try to block you from getting into the bar, " +
+						"you show them the invitation letter. The guards check your letter, " +
+						"then they move aside to let you in.\n\n";
+		if (!visitedDuelGame) {
+			textBuffer +=   "A group of bounty hunters are gathering around " +
+							"a mid-aged women cargo shutter drive who seems to have " +
+							"some really rare information about Decker. " +
+							"Only the first one who can beat her in the duel game can get that prize. \n" +
+							"(It’s okay. They are only using laser toy guns so no on can get hurt.)\n\n" +
+							"press [D] to play the duel game with the driver…\n";
+		}
+		else {
+			textBuffer +=   "You walk into the Bounty Hunter Bar. " +
+							"You see a lot of bounty hunter celebrities, " +
+							"whose faces always appear on the Celestial TV. " +
+							"Some of them are speaking to the cameras, " +
+							"claiming that they are just about to catch that most-wanted Decker.\n\n";
+			textBuffer +=   "“Huh, a bunch of kids. Do nothing but alarm my target. " +
+							"They have made my job a lot harder.” You grumble.\n\n";
+		}
+
+		textBuffer += "press [S] to return to Mars Space Station…\n";
+
+		if (Input.GetKeyDown(KeyCode.D)) {
+			if(!visitedDuelGame)
+				currentRoom = "Duel Game";
+		}
+		if(Input.GetKeyDown(KeyCode.S)){
+			currentRoom = "Space Station";
+		}
+	}
+
+	void ShowDuelWon(ref string textBuffer){
+		textBuffer += "You enjoy looking at this women’s surprised face. " +
+			"Then the driver leads you out of the crowd to a private room, " +
+			"with guards blocking other curious bounty hunters away.\n\n" +
+			"She tells you: “Go to Kai Feng Road and you will see " +
+			"a black market called ‘Shady Treasure’. " +
+			"Maybe you can find something there.\n\n" +
+			"press [S] to return to Mars Space Station…";
+
+		if(Input.GetKeyDown(KeyCode.D)){
+			currentRoom = "Space Station";
+			visitedDuelGame = true;
+		}
 	}
 
 
@@ -311,5 +368,8 @@ public class TextAdvController : MonoBehaviour {
 			currentRoom = "Space Station";
 		}
 	}
+
+
+
 
 }
