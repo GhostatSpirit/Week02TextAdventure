@@ -2,22 +2,39 @@
 using System.Collections;
 using UnityEngine.UI;
 
+// GetComponet<TextAdvController>().currentRoom 
+
 public class TextAdvController : MonoBehaviour {
 	// member variables:
 
 	// string that stores the current room name
-	string currentRoom;
+	public string currentRoom;
+	// bool that controls whether this script will be running
+	public bool running;
+
+
 	// bool that decides if the hero can enter the bar
 	bool hasBarAccess;
+	// wanderPos shows where the player is in the wander process in the Main Street
+	int wanderPos = 0;
 
 	// Use this for initialization
 	void Start () {
 		currentRoom = "Intro";
 		hasBarAccess = false;
+		running = true;
 	}
 	
-	// Update is called once per frame
-	// main chunk of the text adventure
+	/* Rooms:
+	 * Intro
+	 * Space Station
+	 * Bar
+	 * Market
+	 * Main Street
+	 * Weapon Universe
+	 * 
+	 */
+
 	void Update () {
 		// declare the text buffer
 		string textBuffer = "";
@@ -41,6 +58,9 @@ public class TextAdvController : MonoBehaviour {
 		else if (currentRoom == "Market"){
 			ShowRoomName (ref textBuffer);
 			ShowMarket (ref textBuffer);
+		}
+		else if(currentRoom == "Main Street"){
+			ShowMainStreet(ref textBuffer);
 		}
 
 		// render out the text buffer
@@ -115,6 +135,33 @@ public class TextAdvController : MonoBehaviour {
 	}
 
 	void ShowMarket (ref string textBuffer){
-		
+		textBuffer += "Mars Open Market is the largest known market in the universe. " +
+		"Crowds come and leave, dealing things ranging from rare vegetables to deadly weaponry.\n" +
+		"\nThe Main Street is crowded with all kinds of people: " +
+		"merchants, mercenaries, travelers, kids and of course, gangs. " +
+		"At the corner of the street you can find Weapon Universe, " +
+		"which is, literally, the universe of weapons.\n" +
+		"\npress [A] to wander on the Main Street…" +
+		"\npress [D] to enter Weapon Universe…" +
+		"\npress [S] to return to Mars Space Station…";
+		if(Input.GetKeyDown(KeyCode.A)){
+			currentRoom = "Main Street";
+		} else if(Input.GetKeyDown(KeyCode.D)){
+			currentRoom = "Weapon Universe";
+		} else if(Input.GetKeyDown(KeyCode.S)){
+			currentRoom = "Space Station";
+		}
 	}
+
+	void ShowMainStreet(ref string textBuffer){
+		// wanderPos stores where the player is in the wander process
+		textBuffer += "Your are wandering in the Main Street of the market.\n";
+		if(wanderPos == 0){
+			//Wander0();
+		} else{
+				
+		}
+	}
+
+
 }

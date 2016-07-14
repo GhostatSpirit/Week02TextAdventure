@@ -3,7 +3,9 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class DuetGame : MonoBehaviour {
-	//bool hasBegun;
+	// bool that controls whether this script will run
+	bool running;
+
 	float beginTime;
 	// the shortest time that the reaction moment starts
 	public float minSec = 5f;
@@ -30,6 +32,7 @@ public class DuetGame : MonoBehaviour {
 		playerReactTime = -1f;
 		comReactTime = GenerateReactTime();
 
+		running = false;
 	}
 	
 	// Update is called once per frame
