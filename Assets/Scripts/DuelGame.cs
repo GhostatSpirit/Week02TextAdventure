@@ -80,6 +80,12 @@ public class DuelGame : MonoBehaviour {
 				textBuffer += "\nComp reaction time: " + comReactTime.ToString();
 				if (playerReactTime <= comReactTime) {
 					textBuffer += "\nYou won!\n";
+					textBuffer += "\npress [D] to continue…";
+
+					if (Input.GetKeyDown(KeyCode.D)) {
+						GetComponent<TextAdvController>().currentRoom = "Duel Game Won";
+					}
+
 				} else {
 					textBuffer += "\nYou lose!\n";
 					textBuffer +=   "The women driver seems bored. " +

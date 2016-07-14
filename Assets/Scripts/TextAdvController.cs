@@ -29,6 +29,7 @@ public class TextAdvController : MonoBehaviour {
 	// shows where the player is in Weapon Universe
 	int weaponPos = 0;
 
+	int punchNum = 0;
 	// Use this for initialization
 	void Start () {
 		active = true;
@@ -52,7 +53,10 @@ public class TextAdvController : MonoBehaviour {
 	 * Weapon Universe
 	 * Duel Game
 	 * Duel Game Won
+	 * Shady Treasure
+	 * Outro
 	 */
+
 
 	void Update () {
 		// if the script is not active, do not execute the following lines
@@ -75,7 +79,6 @@ public class TextAdvController : MonoBehaviour {
 			if(!hasBarAccess){
 				ShowBarBlocked (ref textBuffer);
 			} else{
-				ShowRoomName(ref textBuffer);
 				ShowBarEnter (ref textBuffer);
 			}
 		}
@@ -94,7 +97,13 @@ public class TextAdvController : MonoBehaviour {
 			ShowRoomName(ref textBuffer);
 			ShowWeaponUniverse(ref textBuffer);
 		}
-
+		else if(currentRoom == "Shady Treasure"){
+			ShowRoomName(ref textBuffer);
+			ShowShadyTreasure(ref textBuffer);
+		}
+		else if(currentRoom == "Outro"){
+			ShowOutro(ref textBuffer);
+		}
 		// render out the text buffer
 		GetComponent<Text>().text = textBuffer;
 			
@@ -141,10 +150,16 @@ public class TextAdvController : MonoBehaviour {
 						"\npress [A] to go to the Bounty Hunter Bar…\n" +
 						"press [D] to head for Mars Open Market…\n";
 
+		if (visitedDuelGame)
+			textBuffer += "press [W] to try to find Shady Treasure…\n";
+
 		if(Input.GetKeyDown(KeyCode.A)){
 			currentRoom = "Bar";
 		} else if(Input.GetKeyDown(KeyCode.D)){
 			currentRoom = "Market";
+		} else if(Input.GetKeyDown(KeyCode.W)){
+			if (visitedDuelGame)
+				currentRoom = "Shady Treasure";
 		}
 
 	} 
@@ -206,7 +221,7 @@ public class TextAdvController : MonoBehaviour {
 			"Maybe you can find something there.\n\n" +
 			"press [S] to return to Mars Space Station…";
 
-		if(Input.GetKeyDown(KeyCode.D)){
+		if(Input.GetKeyDown(KeyCode.S)){
 			currentRoom = "Space Station";
 			visitedDuelGame = true;
 		}
@@ -361,15 +376,61 @@ public class TextAdvController : MonoBehaviour {
 						"As you stop your performance, he opens his mouth:\n" +
 						"“All I know is Decker is a guy with a Dragon tattoo. " +
 						"One of my best friends at the police office told me.”\n\n" +
-						"Well, at least the search scope is narrowed down a little.\n\n" +
+						"Well, at least the search scope is narrowed down a little.\n" +
 						"press [S] to head back to Mars Space Station";
 		if (Input.GetKeyDown(KeyCode.S)) {
 			visitedWeaponUniverse = true;
+			knownAppearance = true;
 			currentRoom = "Space Station";
 		}
 	}
 
+	void ShowShadyTreasure(ref string textBuffer){
+		textBuffer +=   "You entered the gloomy black market, " +
+						"crowded with merchants and criminals dealing illegal drugs and weapons. \n";
+		
+		if (!knownAppearance){
+			textBuffer += 
+				"\nYou want to search for your prey Decker, " +
+				"but then you realize you know nothing about his appearance. " +
+				"According to those sources from the Main Street, " +
+				"it seems like Decker is a two-meter-tall child beauty " +
+				"who used to be a basketball player, or some kind of transsexual alien.\n" +
+				"\nAh… Maybe you need more clues to trace this Decker. " +
+				"Heading for the market again sounds like a good idea.\n" +
+				"press [S] to go back to Mars Space Station…\n";
+			if(Input.GetKeyDown(KeyCode.S)){
+				currentRoom = "Space Station";
+			}
+		} else {
+			textBuffer +=   "You search everywhere for a person with the dragon tattoo. " +
+							"You are scanning people’s skins: you find snake tattoo, bear tattoo, " +
+							"Chinese character tattoo, but no dragon tattoo.\n" +
+							"\nYou feel tired, so you head for the restroom to wash your face. " +
+							"Through the mirror you see a timid student-like young man with…\n" +
+							"A dragon tattoo on his upper shoulder! " +
+							"That’s him!\n" +
+							"\nYour start to punch him in his face, trying to knock him off.\n" +
+							"\n(press [Space] to land on punches)\nPunches: " + punchNum.ToString();
+			if(punchNum >= 30){
+				currentRoom = "Outro";
+			}
+			
+			if(Input.GetKeyDown(KeyCode.Space)){
+				punchNum++;
+			}
+		}
+	}
 
+	void ShowOutro(ref string textBuffer){
+		textBuffer +=   "You beat Decker down and send him to the Mars Police Department. " +
+						"1000000 credits are immediately added to your account. " +
+						"The beggar in the Main Street appears in your mind: " +
+						"he said Decker is a student expelled from school, " +
+						"looks like he’s right.\n\n" +
+						"“Maybe I owe him a meal. I’ll take him to have some Peking Duck with me!”\n" +
+						"\nTime for celebration!\nYOU WON!";
+	}
 
 
 }
