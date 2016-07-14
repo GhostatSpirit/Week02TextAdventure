@@ -15,12 +15,17 @@ public class TextAdvController : MonoBehaviour {
 
 	// bool that decides if the hero can enter the bar
 	bool hasBarAccess;
+	// bool that stores whether the player knows the apperance of Decker
+	bool knownAppearance;
+
 	// bool that shows whether the player has finished searching in the Main Street
 	bool visitedMainStreet;
 	// bool that shows whether the player has finished searching in Weapon Universe
 	bool visitedWeaponUniverse;
 	// wanderPos shows where the player is in the wander process in the Main Street
 	int wanderPos = 0;
+	// shows where the player is in Weapon Universe
+	int weaponPos = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -28,6 +33,7 @@ public class TextAdvController : MonoBehaviour {
 		currentRoom = "Intro";
 
 		hasBarAccess = false;
+		knownAppearance = false;
 
 		visitedMainStreet = false;
 		visitedWeaponUniverse = false;
@@ -71,15 +77,20 @@ public class TextAdvController : MonoBehaviour {
 		else if(currentRoom == "Main Street"){
 			ShowMainStreet(ref textBuffer);
 		}
+		else if(currentRoom == "Weapon Universe"){
+			ShowRoomName(ref textBuffer);
+			ShowWeaponUniverse(ref textBuffer);
+		}
 
 		// render out the text buffer
 		GetComponent<Text>().text = textBuffer;
 			
 	}
 
-	// add a line that shows the room name too the buffer
+	// add a line that shows the room name too the buffer,
+	// then add another blank line
 	void ShowRoomName(ref string textBuffer){
-		string temp = "You are currently in: " + currentRoom + "\n";
+		string temp = "You are currently in: " + currentRoom + "\n\n";
 		textBuffer += temp;
 	}
 
@@ -125,6 +136,7 @@ public class TextAdvController : MonoBehaviour {
 
 	} 
 
+
 	void ShowBarBlocked(ref string textBuffer){
 		textBuffer +=   "As soon as you step onto the stairs in front of Bounty Hunter Bar, " +
 						"two sturdy guards get in your way and speak firmly:\n" +
@@ -142,6 +154,7 @@ public class TextAdvController : MonoBehaviour {
 	void ShowBarEnter(ref string textBuffer){
 		
 	}
+
 
 	void ShowMarket (ref string textBuffer){
 		textBuffer += "Mars Open Market is the largest known market in the universe. " +
@@ -168,6 +181,7 @@ public class TextAdvController : MonoBehaviour {
 		}
 	}
 
+
 	void ShowMainStreet(ref string textBuffer){
 		// wanderPos stores where the player is in the wander process
 
@@ -190,7 +204,6 @@ public class TextAdvController : MonoBehaviour {
 			ShowWanderMsg3(ref textBuffer);
 		}
 	}
-
 
 	void ShowWanderMsg0(ref string textBuffer){
 		textBuffer +=   "A hippie with slovenly appearance answers: " +
@@ -253,5 +266,50 @@ public class TextAdvController : MonoBehaviour {
 		}
 	}
 
+
+	void ShowWeaponUniverse(ref string textBuffer){
+		if(weaponPos == 0){
+			showWeapon0(ref textBuffer);
+		} else if(weaponPos == 1){
+			showWeapon1(ref textBuffer);
+		}
+	}
+
+	void showWeapon0(ref string textBuffer){
+		textBuffer +=   "You walk by shabby shelves and displays in Weapon Universe, " +
+						"glancing from Japanese swords to cutting-edge labor cannons. " +
+						"The owner of this gun shop is browsing " +
+						"an pornographic magazine behind the counter.\n" +
+						"\nChatting with the owner, you start mentioning your prey, Decker. " +
+						"Yet the owner speaks to you impatiently, eyes still on that magazine:\n" +
+						"“Bro, on Mars, everything has a price, no matter it is weapons or people’s lives. " +
+						"You’ll need to pay something if you want information.”\n" +
+						"\npress [D] to keep wandering in the shop";
+		
+		if (Input.GetKeyDown(KeyCode.D)) {
+			weaponPos++;
+		}
+	}
+
+	void showWeapon1(ref string textBuffer){
+		textBuffer +=  "You walk at a slow pace, and eventually stop by " +
+						"an interesting pair of nunchucks. \n\n" +
+						"“This pair of nunchucks has an extremely long chain. " +
+						"Is it the kind of pair Bruce Lee used in ‘Way of the Dragon’?” " +
+						"you asked.\n“You know that?” " +
+						"The shop owner moved his eyes off the magazine. " +
+						"“It’s from the 21st century. Really rare ones.”\n\n" +
+						"You start playing with the nunchucks, waving them here and there. " +
+						"The shop owner looks like having a pleasure. " +
+						"As you stop your performance, he opens his mouth:\n" +
+						"“All I know is Decker is a guy with a Dragon tattoo. " +
+						"One of my best friends at the police office told me.”\n\n" +
+						"Well, at least the search scope is narrowed down a little.\n\n" +
+						"press [S] to head back to Mars Space Station";
+		if (Input.GetKeyDown(KeyCode.S)) {
+			visitedWeaponUniverse = true;
+			currentRoom = "Space Station";
+		}
+	}
 
 }
